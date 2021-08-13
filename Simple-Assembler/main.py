@@ -6,10 +6,6 @@ registers = {"R0": "000", "R1": "001", "R2": "010", "R3": "011", "R4": "100", "R
 opcode = {"add": "00000", "sub": "00001", "mov_imm": "00010", "mov_reg": "00011", "ld": "00100", "st": "00101",
           "mul": "00110", "div": "00111", "rs": "01000", "ls": "01001", "xor": "01010", "or": "01011", "and": "01100",
           "not": "01101", "cmp": "01110", "jmp": "01111", "jlt": "10000", "jgt": "10001", "je": "10010", "hlt": "10011"}
-unused_bits = 0
-reg1 = 0
-reg2 = 0
-reg3 = 0
 
 
 def check(instruction, arr):
@@ -20,7 +16,7 @@ def check(instruction, arr):
     elif instruction == "mov" and len(arr) == 3 and arr[1] in registers:
         if arr[2] in registers:
             return True
-        else:# checking the syntax for immediate
+        else:  # checking the syntax for immediate
             dollar = 0
             num = 0
             for i in arr[2]:
@@ -38,8 +34,14 @@ def check(instruction, arr):
         return True
     elif instruction == "xor" and len(arr) == 4 and arr[1] in registers and arr[2] in registers and arr[3] in registers:
         return True
-
-
+    elif instruction == "or" and len(arr) == 4 and arr[1] in registers and arr[2] in registers and arr[3] in registers:
+        return True
+    elif instruction == "and" and len(arr) == 4 and arr[1] in registers and arr[2] in registers and arr[3] in registers:
+        return True
+    elif instruction == "not" and len(arr) == 3 and arr[1] in registers and arr[2] in registers:
+        return True
+    elif instruction == "cmp" and len(arr) == 3 and arr[1] in registers and arr[2] in registers:
+        return True
 
 
 for line in stdin:
