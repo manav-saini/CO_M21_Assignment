@@ -5,10 +5,24 @@ import sys
 program = [] # input assembly program
 bin_program = [] # output binary code
 address_table = {} # address of vars and labels. {name: (address, isVariable)}
+registers = {"R0": "000", "R1": "001", "R2": "010", "R3": "011", "R4": "100", "R5": "101", "R6": "110", "FLAGS": "111"}
+
 
 location_counter = 0 # reset in every pass
 instruction_location = 0
 last_valid_instruction_count = 0
+
+
+def validRegister(name, canBeFlags):
+	# global registers
+	if name in registers:
+		if name == "FLAGS":
+			if canBeFlags: 
+				return True	
+			else:
+				return False
+		return True
+	return False
 
 
 # converts decimal address val to 8 bit adress string
@@ -163,6 +177,7 @@ def main():
 	print()
 	print()
 	print(memoryLocation(255))
+	print(validRegister("FLAGS", True))
 
 	print()
 	print()
