@@ -11,9 +11,37 @@ instruction_location = 0
 last_valid_instruction_count = 0
 
 
+# converts decimal address val to 8 bit adress string
+def memoryLocation(int_address):
+	address = bin(int_address)[2:]
+	if len(address) < 8:
+		i = 8 - len(address)
+		address = i*"0" + address
+	
+	return address
+
+def validLabelVar(name):
+	global address_table
+	global instruction_location
+	name = "asd"
+	if name in address_table:
+		print(f"Declaration of {name} already exists. Error on line: {instruction_location}")
+		exit()
+
+	for i in name:
+		if i.isalnum or i == "_":
+			continue
+		else:
+			return False
+	
+	return True
+	
+
+
 
 # assumes error free code 
-# finds address of vars and labels. Checks vars declaration location
+# finds address of vars and labels. Checks vars declaration location#
+# handles hlt declarations
 def pass1():
 	global program 
 	global address_table
@@ -33,7 +61,7 @@ def pass1():
 		if operands[0] == "var":
 			if len(operands) != 2:
 				print(f"Invalid declaration syntax of var on line: {instruction_location}")
-				exit
+				exit()
 			if not isValidVar:
 				print(f"Invalid declaration of var on line: {instruction_location}")
 				exit()
@@ -44,8 +72,9 @@ def pass1():
 				if len(operands) == 1:
 					print(f"No instruction after label declaration on line: {instruction_location}") 
 					exit()
-				# TODO: check for valid label name 
-				address_table[operands[0][0:-1]] = (noOfInstructions, False)
+				# DONE: check for valid label name 
+				if validLabelVar(operands[0][0:-1]):
+					address_table[operands[0][0:-1]] = (memoryLocation(noOfInstructions), False)
 			noOfInstructions = noOfInstructions + 1
 	
 	# hlt handling
@@ -78,7 +107,7 @@ def pass1():
 				print(f"Invalid declaration of hlt on line {instruction_location}")
 				exit()
 		if len(line) == 2: 
-			if line[0][-1] == ":" and line[0:-1] in address_table:
+			if line[0][-1] == ":" and line[0][0:-1] in address_table:
 				if line[1] == "hlt":
 					print(f"Invalid declaration of hlt on line {instruction_location}")
 					exit()
@@ -95,9 +124,16 @@ def pass1():
 			continue
 
 		if operands[0] == "var":
-			address_table[operands[1]] = (noOfInstructions, True)
+			if validLabelVar(operands[1]):
+				address_table[operands[1]] = (memoryLocation(noOfInstructions), True)
 		else:
 			break
+		noOfInstructions = noOfInstructions + 1
+	
+	for i in address_table:
+		print(i, end= " ")
+		print(address_table[i])
+	print("passed Pass1")
 
 
 
@@ -121,8 +157,18 @@ def main():
 		if len(line.split()) > 0:
 			isEmpty = False
 			break
-	
 
+	pass1()
+	
+	print()
+	print()
+	print(memoryLocation(255))
+
+	print()
+	print()
+	print()
+	for line in program:
+		print(line, end = "")
 
 
 
