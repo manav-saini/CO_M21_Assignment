@@ -35,8 +35,8 @@ def memoryLocation(int_address):
 	return address
 
 def validLabelVar(name):
-	global address_table
-	global instruction_location
+	# global address_table
+	# global instruction_location
 	name = "asd"
 	if name in address_table:
 		print(f"Declaration of {name} already exists. Error on line: {instruction_location}")
