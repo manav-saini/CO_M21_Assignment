@@ -1,6 +1,5 @@
 TODO: 
-	check valid label name 
-	check valid var name
+	
 	check instruction name (handle in opcode)
 	check valid register name (declare fn IsValidReg() -> (isValidReg, isFlag)) (isFlag is used for handling FLAGS reg use) 
 	check valid var use (simlpe address_table check) (check for undefined var)
@@ -15,8 +14,15 @@ TODO:
 
 
 DONE: ✨
+	check valid label name 
+	check valid var name
 	check declaration location of vars
 	vars declared in beginning 
 	hlt not at end
 	valid hlt declaration
 
+
+
+code
+hlt
+var
