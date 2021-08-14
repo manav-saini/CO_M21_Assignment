@@ -1,5 +1,6 @@
 import sys
-from OPCODE_TABLE import opcode_table
+from TABLES import opcode_table
+from TABLES import type_table
 
 # address: 0 based indexing, error generation: 1 based indexing
 
@@ -188,6 +189,11 @@ def main():
 			isEmpty = False
 			break
 	
+
+	# for i in type_table:
+	# 	print(i, type_table[i])
+
+
 
 	if isEmpty:
 		exit()
