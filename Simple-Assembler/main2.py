@@ -1,3 +1,4 @@
+from _typeshed import OpenBinaryMode
 import sys
 from TABLES import opcode_table
 from TABLES import type_table
@@ -10,8 +11,8 @@ address_table = {} # address of vars and labels. {name: (address, isVariable)}
 registers = {"R0": "000", "R1": "001", "R2": "010", "R3": "011", "R4": "100", "R5": "101", "R6": "110", "FLAGS": "111"}
 
 
-location_counter = 0 # reset in every pass
-instruction_location = 0
+# location_counter = 0  reset in every pass
+instruction_location = 0 # reset in every pass
 last_valid_instruction_count = 0
 
 # checks if immediate is a valid immediate
@@ -59,6 +60,7 @@ def memoryLocation(int_address):
 		address = i*"0" + address
 	
 	return address
+
 
 # checks the naming syntax of label or var
 def validLabelVar(name):
@@ -176,9 +178,72 @@ def pass1():
 		print(address_table[i])
 	print("passed Pass1")
 
+def buildMovBinary():
+	pass
 
-def check(instruction_type, instruction):
-	pass 
+def buildBinary(operands):
+	binary_instruction = ""
+	instruction_type = opcode_table[operands[0]][0]
+	if instruction_type == "F":
+		binary_instruction = opcode_table[operands[0]][0] + 11*"0"
+		return binary_instruction
+	# opcode
+	binary_instruction = binary_instruction + opcode_table[operands[0]][0]
+
+	# unused bits
+	binary_instruction = binary_instruction + type_table[instruction_type][1]*"0"
+
+	#operands
+
+	for i in range(type_table[instruction_type][0]):
+		j = i + 2
+		if type_table[instruction_type][j] == "reg":
+			binary_instruction = binary_instruction + registers[operands[1+i]]
+		elif type_table[instruction_type][j] == "imm":
+			immediate = int(operands[i+1][1:])
+			immediate = bin(immediate)[2:]
+			if len(immediate) < 8:
+				no_of_zeroes = 8 - len(immediate)
+				immediate = no_of_zeroes*"0" + immediate
+			binary_instruction = binary_instruction + immediate
+		else:
+			binary_instruction = binary_instruction + address_table[operands[i+1][0]]
+
+
+	return binary_instruction
+
+
+# validates every instruction type except for mov instruction
+def check(instruction):
+	instruction_type = opcode_table[instruction[0]][1]
+	
+	if len(instruction[1:]) != type_table[instruction_type][0]:
+		print(f"Wrong instruction syntax on line: {instruction_location}")
+		exit()
+
+	for i in range(type_table[instruction_type][0]):
+		j = i + 2
+
+		if type_table[instruction_type][j] == "reg":
+			if not validRegister(instruction[i+1], False):
+				print(f"Invalid register name on line: {instruction_location}")
+				exit()
+		elif type_table[instruction_type][j] == "imm":
+			if not validImmediate(instruction[i+1]):
+				print(f"Invalid immediate on line: {instruction_location}")
+				exit()
+		elif type_table[instruction_type][j] == "mem_addr_var":
+			if not validMemoryAddress(instruction[i+1], True):
+				print(f"Invalid variable address on line: {instruction_location}")
+				exit()
+		else: # label adrress
+			if not validMemoryAddress(instruction[i+1], False):
+				print(f"Invalid label address on line: {instruction_location}")
+				exit()
+	
+
+
+
 
 
 
@@ -188,6 +253,7 @@ def check(instruction_type, instruction):
 
 def pass2():
 	global instruction_location
+	global bin_program
 
 	instruction_location = 0
 	
@@ -204,6 +270,8 @@ def pass2():
 		if operands[0][-1] == ":":
 			if operands[1] in opcode_table:
 				print(type_table[opcode_table[operands[1][1]]])
+				if operands[1] != "mov":
+					bin_program.append(buildBinary(operands[1:]))
 			else:
 				print(f"Invalid instruction name on line: {instruction_location}")
 				exit()
