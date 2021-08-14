@@ -14,7 +14,31 @@ location_counter = 0 # reset in every pass
 instruction_location = 0
 last_valid_instruction_count = 0
 
+# checks if immediate is a valid immediate
+def validImmediate(immediate):
+	if len(immediate) == 0:
+		return False
+	if immediate[0] != "$":
+		return False
 
+	if not immediate[1:].isdecimal():
+		return False
+
+
+	if int(immediate[1:]) > 255 or int(immediate[1:]) < 0:
+		return False
+	
+	return True
+		
+# checks if it is a valid laber or var address
+def validMemoryAddress(memory_address, isVariable):
+	if memory_address in address_table:
+		if isVariable == address_table[memory_address]:
+			return True
+
+	return False
+
+# checks if it is a valid register name and wheter it can be FLAGS
 def validRegister(name, canBeFlags):
 	# global registers
 	if name in registers:
@@ -36,6 +60,7 @@ def memoryLocation(int_address):
 	
 	return address
 
+# checks the naming syntax of label or var
 def validLabelVar(name):
 	# global address_table
 	# global instruction_location
@@ -152,6 +177,11 @@ def pass1():
 	print("passed Pass1")
 
 
+def check(instruction_type, instruction):
+	pass 
+
+
+
 
 # handles opcode validation for each instruction and 
 # calls the relevant check fn for each type of instruction
@@ -160,6 +190,29 @@ def pass2():
 	global instruction_location
 
 	instruction_location = 0
+	
+	for line in program:
+		instruction_location = instruction_location + 1
+		operands = line.split()
+
+		if len(operands) == 0:
+			continue
+
+		if operands[0] == "var":
+			continue
+
+		if operands[0][-1] == ":":
+			if operands[1] in opcode_table:
+				print(type_table[opcode_table[operands[1][1]]])
+			else:
+				print(f"Invalid instruction name on line: {instruction_location}")
+				exit()
+		else:
+			if operands[0] in opcode_table:
+				print(type_table[opcode_table[operands[0][1]]])
+			else:
+				print(f"Invalid instruction name on line: {instruction_location}")
+				exit()	
 
 
 
