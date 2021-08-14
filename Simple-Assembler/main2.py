@@ -1,4 +1,3 @@
-from _typeshed import OpenBinaryMode
 import sys
 from TABLES import opcode_table
 from TABLES import type_table
@@ -34,9 +33,9 @@ def validImmediate(immediate):
 # checks if it is a valid laber or var address
 def validMemoryAddress(memory_address, isVariable):
 	if memory_address in address_table:
-		if isVariable == address_table[memory_address]:
+		if isVariable == address_table[memory_address][1]:
 			return True
-
+	# print(isVariable, address_table[memory_address], memory_address)
 	return False
 
 # checks if it is a valid register name and wheter it can be FLAGS
@@ -173,17 +172,62 @@ def pass1():
 			break
 		noOfInstructions = noOfInstructions + 1
 	
-	for i in address_table:
-		print(i, end= " ")
-		print(address_table[i])
-	print("passed Pass1")
+	# for i in address_table:
+	# 	print(i, end= " ")
+	# 	print(address_table[i])
+	# print("passed Pass1")
 
-def buildMovBinary():
-	pass
+# validates mov instruction of both types B & C
+def checkMov(instruction):
+
+	if len(instruction) != 3:
+		print(f"Wrong instruction syntax on line: {instruction_location}")
+		exit()
+	
+	if not validRegister(instruction[1], False):
+		print(f"Invalid register on line: {instruction_location}")
+		exit()
+
+	validSecondOperand = False
+	if validRegister(instruction[2], True):
+		validSecondOperand = True
+	elif validImmediate(instruction[2]):
+		validSecondOperand = True
+	
+	if not validSecondOperand:
+		print(f"No immediate or register in the second operand of mov instruction on line: {instruction_location}")
+		exit()
+
+
+def buildMovBinary(operands):
+	binary_instruction = ""
+	
+	# unused bits and opcode 
+	if validRegister(operands[2], True):
+		binary_instruction = binary_instruction + opcode_table["mov"][1][0]
+		binary_instruction = binary_instruction + 5*"0"
+	else:
+		binary_instruction = binary_instruction + opcode_table["mov"][0][0]
+	
+	# 1st register
+	binary_instruction = binary_instruction + registers[operands[1]]
+
+	if validRegister(operands[2], True):
+		binary_instruction = binary_instruction + registers[operands[2]]
+	else:
+		immediate = int(operands[2][1:])
+		immediate = bin(immediate)[2:]
+		if len(immediate) < 8:
+			no_of_zeroes = 8 - len(immediate)
+			immediate = no_of_zeroes*"0" + immediate
+		binary_instruction = binary_instruction + immediate
+	
+	return binary_instruction
 
 def buildBinary(operands):
 	binary_instruction = ""
-	instruction_type = opcode_table[operands[0]][0]
+	instruction_type = opcode_table[operands[0]][1]
+	# print(instruction_type + "    :ASDASdASDs")
 	if instruction_type == "F":
 		binary_instruction = opcode_table[operands[0]][0] + 11*"0"
 		return binary_instruction
@@ -207,7 +251,7 @@ def buildBinary(operands):
 				immediate = no_of_zeroes*"0" + immediate
 			binary_instruction = binary_instruction + immediate
 		else:
-			binary_instruction = binary_instruction + address_table[operands[i+1][0]]
+			binary_instruction = binary_instruction + address_table[operands[i+1]][0]
 
 
 	return binary_instruction
@@ -216,7 +260,7 @@ def buildBinary(operands):
 # validates every instruction type except for mov instruction
 def check(instruction):
 	instruction_type = opcode_table[instruction[0]][1]
-	
+
 	if len(instruction[1:]) != type_table[instruction_type][0]:
 		print(f"Wrong instruction syntax on line: {instruction_location}")
 		exit()
@@ -269,15 +313,23 @@ def pass2():
 
 		if operands[0][-1] == ":":
 			if operands[1] in opcode_table:
-				print(type_table[opcode_table[operands[1][1]]])
 				if operands[1] != "mov":
+					check(operands[1:])
 					bin_program.append(buildBinary(operands[1:]))
+				else: # mov instruction
+					checkMov(operands[1:])
+					bin_program.append(buildMovBinary(operands[1:]))
 			else:
 				print(f"Invalid instruction name on line: {instruction_location}")
 				exit()
 		else:
 			if operands[0] in opcode_table:
-				print(type_table[opcode_table[operands[0][1]]])
+				if operands[0] != "mov":
+					check(operands)
+					bin_program.append(buildBinary(operands))
+				else: # mov instruction
+					checkMov(operands)
+					bin_program.append(buildMovBinary(operands))
 			else:
 				print(f"Invalid instruction name on line: {instruction_location}")
 				exit()	
@@ -320,17 +372,19 @@ def main():
 		exit()
 
 	pass1()
-	
-	print()
-	print()
-	print(memoryLocation(255))
-	print(validRegister("FLAGS", True))
+	pass2()
 
-	print()
-	print()
-	print()
-	for line in program:
-		print(line, end = "")
+
+	# print()
+	# print()
+	# print(memoryLocation(255))
+	# print(validRegister("FLAGS", True))
+
+	# print()
+	# print()
+	# print()
+	for line in bin_program:
+		print(line, end = "\n")
 
 
 
