@@ -29,18 +29,18 @@ def validImmediate(immediate):
 		return False
 	
 	return True
+
+
 		
 # checks if it is a valid laber or var address
 def validMemoryAddress(memory_address, isVariable):
 	if memory_address in address_table:
 		if isVariable == address_table[memory_address][1]:
 			return True
-	# print(isVariable, address_table[memory_address], memory_address)
 	return False
 
 # checks if it is a valid register name and wheter it can be FLAGS
 def validRegister(name, canBeFlags):
-	# global registers
 	if name in registers:
 		if name == "FLAGS":
 			if canBeFlags: 
@@ -63,8 +63,6 @@ def memoryLocation(int_address):
 
 # checks the naming syntax of label or var
 def validLabelVar(name):
-	# global address_table
-	# global instruction_location
 	name = "asd"
 	if name in address_table:
 		print(f"Declaration of {name} already exists. Error on line: {instruction_location}")
@@ -78,7 +76,6 @@ def validLabelVar(name):
 	
 	return True
 	
-
 
 
 # assumes error free code 
@@ -177,6 +174,8 @@ def pass1():
 	# 	print(address_table[i])
 	# print("passed Pass1")
 
+
+
 # validates mov instruction of both types B & C
 def checkMov(instruction):
 
@@ -201,7 +200,7 @@ def checkMov(instruction):
 
 def buildMovBinary(operands):
 	binary_instruction = ""
-	
+
 	# unused bits and opcode 
 	if validRegister(operands[2], True):
 		binary_instruction = binary_instruction + opcode_table["mov"][1][0]
@@ -224,10 +223,11 @@ def buildMovBinary(operands):
 	
 	return binary_instruction
 
+
+
 def buildBinary(operands):
 	binary_instruction = ""
 	instruction_type = opcode_table[operands[0]][1]
-	# print(instruction_type + "    :ASDASdASDs")
 	if instruction_type == "F":
 		binary_instruction = opcode_table[operands[0]][0] + 11*"0"
 		return binary_instruction
@@ -255,6 +255,7 @@ def buildBinary(operands):
 
 
 	return binary_instruction
+
 
 
 # validates every instruction type except for mov instruction
@@ -285,10 +286,6 @@ def check(instruction):
 				print(f"Invalid label address on line: {instruction_location}")
 				exit()
 	
-
-
-
-
 
 
 
@@ -336,15 +333,6 @@ def pass2():
 
 
 
-
-
-
-
-
-
-
-
-
 # reads input
 def loadProgram():
 	global program
@@ -363,26 +351,12 @@ def main():
 			break
 	
 
-	# for i in type_table:
-	# 	print(i, type_table[i])
-
-
-
 	if isEmpty:
 		exit()
 
 	pass1()
 	pass2()
 
-
-	# print()
-	# print()
-	# print(memoryLocation(255))
-	# print(validRegister("FLAGS", True))
-
-	# print()
-	# print()
-	# print()
 	for line in bin_program:
 		print(line, end = "\n")
 
