@@ -1,4 +1,5 @@
 import sys
+from OPCODE_TABLE import opcode_table
 
 # address: 0 based indexing, error generation: 1 based indexing
 
@@ -57,7 +58,7 @@ def validLabelVar(name):
 # finds address of vars and labels. Checks vars declaration location#
 # handles hlt declarations
 def pass1():
-	global program 
+	program 
 	global address_table
 	global instruction_location
 	global last_valid_instruction_count 
@@ -151,6 +152,21 @@ def pass1():
 
 
 
+# handles opcode validation for each instruction and 
+# calls the relevant check fn for each type of instruction
+
+def pass2():
+	global instruction_location
+
+	instruction_location = 0
+
+
+
+
+
+
+
+
 
 
 
@@ -171,6 +187,10 @@ def main():
 		if len(line.split()) > 0:
 			isEmpty = False
 			break
+	
+
+	if isEmpty:
+		exit()
 
 	pass1()
 	
