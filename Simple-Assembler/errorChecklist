@@ -20,8 +20,3 @@ DONE: ✨
 	Immediate value out of bound [0-255]
 	var instead of label and vice versa
 	wrong instruction syntax
-
-
-code
-hlt
-var
