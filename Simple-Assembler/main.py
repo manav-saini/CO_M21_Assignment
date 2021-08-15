@@ -63,29 +63,36 @@ def memoryLocation(int_address):
 
 # checks the naming syntax of label or var
 def validLabelVar(name):
-	name = "asd"
 	if name in address_table:
 		print(f"Declaration of {name} already exists. Error on line: {instruction_location}")
 		exit()
 
+	if name in opcode_table or name == "var":
+		print(f"Reserved words can't be used as identifiers for vars or labels. Error on line: {instruction_location}")
+		exit()
+
+	if name.isdecimal():
+		print(f"Identifiers can't be purely numeric. Error on line: {instruction_location}")
+		exit()
+
 	for i in name:
-		if i.isalnum or i == "_":
+		if i.isalnum() or i == "_":
 			continue
 		else:
-			return False
+			print(f"Invalid identifier used on line: {instruction_location}")
+			exit()
 	
 	return True
 	
 
 
 # assumes error free code 
-# finds address of vars and labels. Checks vars declaration location#
+# finds address of vars and labels. Checks vars declaration location
 # handles hlt declarations
 def pass1():
-	program 
 	global address_table
 	global instruction_location
-	global last_valid_instruction_count 
+	global last_valid_instruction_count # used for handling hlt statements
 
 	instruction_location = 0
 	isValidVar = True
@@ -169,10 +176,6 @@ def pass1():
 			break
 		noOfInstructions = noOfInstructions + 1
 	
-	# for i in address_table:
-	# 	print(i, end= " ")
-	# 	print(address_table[i])
-	# print("passed Pass1")
 
 
 
@@ -341,18 +344,7 @@ def loadProgram():
 
 
 def main():
-	global program 
 	loadProgram()
-	# check if program is empty
-	isEmpty = True
-	for line in program:
-		if len(line.split()) > 0:
-			isEmpty = False
-			break
-	
-
-	if isEmpty:
-		exit()
 
 	pass1()
 	pass2()

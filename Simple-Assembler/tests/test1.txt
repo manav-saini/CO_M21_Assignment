@@ -1,18 +1,11 @@
-var Y
-var adas
-
-var adsda
-add R0 R1 R2
-label1: sub R0 R2 R3
-add R1 R3 R3
-
- 
-label3: sub R0 R1 R3
-
-halt_label: hlt
 
 
 
+
+var asda
+asd: add R0 R1 R2
+mov R1 R0
+label: hlt
 
 
 
