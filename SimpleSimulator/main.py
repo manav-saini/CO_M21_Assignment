@@ -12,7 +12,6 @@ while not halted:
 	
 	next_instruction, halted =  EE.execute(instruction)
 
-	# print(MEM.to8Bit(PC), end = " ")
 	MEM.printRF()
 
 	MEM.PC = next_instruction

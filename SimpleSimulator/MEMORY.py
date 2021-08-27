@@ -15,6 +15,7 @@ def initialize():
 	global program
 	global no_of_instructions
 	global PC
+	global cycle
 	global variables
 
 	for line in sys.stdin:
@@ -28,6 +29,7 @@ def initialize():
 		variables.append(0)
 	
 	PC = 0
+	cycle = 0
 	
 
 def to16Bit(value):
