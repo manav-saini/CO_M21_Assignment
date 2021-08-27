@@ -58,8 +58,8 @@ def mov_reg(instruction):
 				val = val + "0"
 		reg2 = int(val, 2)
 
-	MEM.setData(reg1_addr, reg2)
 	MEM.resetFlags()
+	MEM.setData(reg1_addr, reg2)
 
 
 # reg1 = value(mem_addr)
