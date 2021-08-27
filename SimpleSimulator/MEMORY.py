@@ -18,6 +18,8 @@ def initialize():
 	global variables
 
 	for line in sys.stdin:
+		if len(line.split()) == 0:
+			continue
 		program.append(line)
 
 	no_of_instructions = len(program)
@@ -147,7 +149,8 @@ def dump():
 	for i in program:
 		print(i, end = "")
 	
-	print()
+	if program[len(program)-1][-1] != '\n':
+		print()
 	
 	for i in variables:
 		print(to16Bit(i))

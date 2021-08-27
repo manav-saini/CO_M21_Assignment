@@ -265,6 +265,7 @@ def execute(instruction):
 	PC = MEM.PC + 1
 
 	if opcode == "hlt":
+		MEM.resetFlags()
 		halted = True
 	elif opcode == "add":
 		add(instruction)
