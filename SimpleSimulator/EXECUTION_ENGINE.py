@@ -1,6 +1,5 @@
 import MEMORY as MEM
 from TABLES import opcode_table
-# from TABLES import type_table
 
 # reg1 = reg2 + reg3
 def add(instruction):
